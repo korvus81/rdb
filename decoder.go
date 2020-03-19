@@ -107,12 +107,13 @@ const (
 	TypeZSet   ValueType = 3
 	TypeHash   ValueType = 4
 
-	TypeHashZipmap    ValueType = 9
-	TypeListZiplist   ValueType = 10
-	TypeSetIntset     ValueType = 11
-	TypeZSetZiplist   ValueType = 12
-	TypeHashZiplist   ValueType = 13
-	TypeListQuicklist ValueType = 14
+	TypeHashZipmap     ValueType = 9
+	TypeListZiplist    ValueType = 10
+	TypeSetIntset      ValueType = 11
+	TypeZSetZiplist    ValueType = 12
+	TypeHashZiplist    ValueType = 13
+	TypeListQuicklist  ValueType = 14
+	TypeStreamListPack ValueType = 15
 )
 
 const (
@@ -121,12 +122,15 @@ const (
 	rdb32bitLen = 2
 	rdbEncVal   = 3
 
-	rdbFlagAux      = 0xfa
-	rdbFlagResizeDB = 0xfb
-	rdbFlagExpiryMS = 0xfc
-	rdbFlagExpiry   = 0xfd
-	rdbFlagSelectDB = 0xfe
-	rdbFlagEOF      = 0xff
+	rdbFlagModuleAux = 0xf7
+	rdbFlagIdle      = 0xf8
+	rdbFlagFreq      = 0xf9
+	rdbFlagAux       = 0xfa
+	rdbFlagResizeDB  = 0xfb
+	rdbFlagExpiryMS  = 0xfc
+	rdbFlagExpiry    = 0xfd
+	rdbFlagSelectDB  = 0xfe
+	rdbFlagEOF       = 0xff
 
 	rdbEncInt8  = 0
 	rdbEncInt16 = 1
@@ -162,6 +166,18 @@ func (d *decode) decode() error {
 			return err
 		}
 		switch objType {
+		case rdbFlagModuleAux:
+			panic("aux not implemented")
+		case rdbFlagIdle:
+			_, _, err := d.readLength()
+			if err != nil {
+				return err
+			}
+		case rdbFlagFreq:
+			_, _, err := d.readLength()
+			if err != nil {
+				return err
+			}
 		case rdbFlagAux:
 			auxKey, err := d.readString()
 			if err != nil {
@@ -255,6 +271,8 @@ func (d *decode) readObject(key []byte, typ ValueType, expiry int64) error {
 			d.readZiplist(key, 0, false)
 		}
 		d.event.EndList(key)
+	case TypeStreamListPack:
+		panic("TypeStreamListPack not implemented")
 	case TypeSet:
 		cardinality, _, err := d.readLength()
 		if err != nil {
@@ -628,7 +646,7 @@ func (d *decode) checkHeader() error {
 	}
 
 	version, _ := strconv.ParseInt(string(header[5:]), 10, 64)
-	if version < 1 || version > 7 {
+	if version < 1 || version > 9 {
 		return fmt.Errorf("rdb: invalid RDB version number %d", version)
 	}
 

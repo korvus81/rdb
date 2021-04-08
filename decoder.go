@@ -106,6 +106,7 @@ const (
 	TypeSet    ValueType = 2
 	TypeZSet   ValueType = 3
 	TypeHash   ValueType = 4
+	TypeZSet2  ValueType = 5
 
 	TypeHashZipmap     ValueType = 9
 	TypeListZiplist    ValueType = 10
@@ -299,6 +300,24 @@ func (d *decode) readObject(key []byte, typ ValueType, expiry int64) error {
 				return err
 			}
 			score, err := d.readFloat64()
+			if err != nil {
+				return err
+			}
+			d.event.Zadd(key, score, member)
+		}
+		d.event.EndZSet(key)
+	case TypeZSet2:
+		cardinality, _, err := d.readLength()
+		if err != nil {
+			return err
+		}
+		d.event.StartZSet(key, int64(cardinality), expiry)
+		for i := uint32(0); i < cardinality; i++ {
+			member, err := d.readString()
+			if err != nil {
+				return err
+			}
+			score, err := d.readBinaryFloat64()
 			if err != nil {
 				return err
 			}
@@ -763,6 +782,14 @@ func (d *decode) readFloat64() (float64, error) {
 	}
 
 	panic("not reached")
+}
+
+func (d *decode) readBinaryFloat64() (float64, error) {
+	length, err := d.readUint64()
+	if err != nil {
+		return 0, err
+	}
+	return math.Float64frombits(length), nil
 }
 
 func (d *decode) readLength() (uint32, bool, error) {

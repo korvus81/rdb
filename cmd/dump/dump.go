@@ -31,21 +31,21 @@ func (p *decoder) Set(key, value []byte, expiry int64) {
 	if len(value) < minSize {
 		return
 	}
-	fmt.Fprintf(p.w, "%q\tset\t%d\n", key, len(value))
+	fmt.Fprintf(p.w, "%q\tset\t%d\t%d\n", key, len(value), len(key)+len(value))
 }
 
 func (p *decoder) Hset(key, field, value []byte) {
 	if len(value) < minSize {
 		return
 	}
-	fmt.Fprintf(p.w, "%q\thset\t%d\t%q\n", key, len(value), field)
+	fmt.Fprintf(p.w, "%q\thset\t%d\t%d\t%q\n", key, len(value), len(key)+len(value), field)
 }
 
 func (p *decoder) Sadd(key, member []byte) {
 	if len(member) < minSize {
 		return
 	}
-	fmt.Fprintf(p.w, "%q\tsadd\t%d\n", key, len(member))
+	fmt.Fprintf(p.w, "%q\tsadd\t%d\t%d\n", key, len(member), len(key)+len(member))
 }
 
 func (p *decoder) StartList(key []byte, length, expiry int64) {
@@ -56,7 +56,7 @@ func (p *decoder) Rpush(key, value []byte) {
 	if len(value) < minSize {
 		return
 	}
-	fmt.Fprintf(p.w, "%q\trpush\t%d\t%d\n", key, len(value), p.i)
+	fmt.Fprintf(p.w, "%q\trpush\t%d\t%d\t%d\n", key, len(value), len(key)+len(value), p.i)
 	p.i++
 }
 
@@ -68,7 +68,7 @@ func (p *decoder) Zadd(key []byte, score float64, member []byte) {
 	if len(member) < minSize {
 		return
 	}
-	fmt.Fprintf(p.w, "%q\tzadd\t%d\t%d\n", key, len(member), p.i)
+	fmt.Fprintf(p.w, "%q\tzadd\t%d\t%d\t%d\n", key, len(member), len(key)+len(member), p.i)
 	p.i++
 }
 

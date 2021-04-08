@@ -83,10 +83,13 @@ func main() {
 		log.Fatal(err)
 	}
 
+	out := bufio.NewWriter(os.Stdout)
+	defer out.Flush()
+
 	f, err := os.Open(os.Args[1])
 	maybeFatal(err)
 	err = rdb.Decode(f, &decoder{
-		w: bufio.NewWriter(os.Stdout),
+		w: out,
 	})
 	maybeFatal(err)
 }

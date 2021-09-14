@@ -83,6 +83,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	if len(os.Args) < 2 {
+		fmt.Fprintf(os.Stderr, "usage: dump dump.rdb\n")
+		os.Exit(1)
+	}
+
 	out := bufio.NewWriter(os.Stdout)
 	defer out.Flush()
 

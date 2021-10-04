@@ -1,4 +1,4 @@
-# rdb [![Build Status](https://travis-ci.org/cupcake/rdb.png?branch=master)](https://travis-ci.org/cupcake/rdb)
+# rdb 
 
 rdb is a Go package that implements parsing and encoding of the
 [Redis](http://redis.io) [RDB file
@@ -8,10 +8,10 @@ This package was heavily inspired by
 [redis-rdb-tools](https://github.com/sripathikrishnan/redis-rdb-tools) by
 [Sripathi Krishnan](https://github.com/sripathikrishnan).
 
-[**Documentation**](http://godoc.org/github.com/cupcake/rdb)
+[**Documentation**](http://godoc.org/github.com/korvus81/rdb)
 
 ## Installation
 
 ```
-go get github.com/cupcake/rdb
+go get github.com/korvus81/rdb
 ```

@@ -9,8 +9,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/cupcake/rdb"
-	"github.com/cupcake/rdb/nopdecoder"
+	"github.com/korvus81/rdb"
+	"github.com/korvus81/rdb/nopdecoder"
 
 	"github.com/google/gops/agent"
 )
